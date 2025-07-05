@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Course } from '../models/course.model';
 import { MOCK_COURSES } from '../mock/mock-data';
 
@@ -8,22 +8,18 @@ import { MOCK_COURSES } from '../mock/mock-data';
 })
 export class CourseService {
   private courses: Course[] = [];
-
+  private coursesSubject = new BehaviorSubject<Course[]>([]);
   constructor() {
     this.courses = [...MOCK_COURSES];
+    this.coursesSubject.next([...this.courses]);
   }
 
   getCourses(): Observable<Course[]> {
-    return of(this.courses);
+    return this.coursesSubject.asObservable();
   }
 
   getCourseById(courseId: string): Observable<Course | undefined> {
     const course = this.courses.find((c) => c.courseId === courseId);
-    return of(course);
-  }
-
-  addCourse(course: Course): Observable<Course> {
-    this.courses.push(course);
     return of(course);
   }
 
@@ -34,17 +30,19 @@ export class CourseService {
     const index = this.courses.findIndex((c) => c.courseId === courseId);
     if (index !== -1) {
       this.courses[index] = { ...this.courses[index], ...updatedCourse };
-      return of(this.courses[index]);
+      this.coursesSubject.next([...this.courses]);
+      return new BehaviorSubject(this.courses[index]).asObservable();
     }
-    return of(undefined);
+    return new BehaviorSubject(undefined).asObservable();
   }
 
   deleteCourse(courseId: string): Observable<boolean> {
     const index = this.courses.findIndex((c) => c.courseId === courseId);
     if (index !== -1) {
       this.courses.splice(index, 1);
-      return of(true);
+      this.coursesSubject.next([...this.courses]);
+      return new BehaviorSubject(true).asObservable();
     }
-    return of(false);
+    return new BehaviorSubject(false).asObservable();
   }
 }

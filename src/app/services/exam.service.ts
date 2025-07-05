@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Exam } from '../models/exam.model';
 import { MOCK_EXAMS } from '../mock/mock-data';
 
@@ -8,27 +8,25 @@ import { MOCK_EXAMS } from '../mock/mock-data';
 })
 export class ExamService {
   private exams: Exam[] = [];
-
+  private examsSubject = new BehaviorSubject<Exam[]>([]);
   constructor() {
     this.exams = [...MOCK_EXAMS];
+    this.examsSubject.next([...this.exams]);
   }
 
   getExams(): Observable<Exam[]> {
-    return of(this.exams);
-  }
-
-  addExam(exam: Exam): Observable<Exam> {
-    this.exams.push(exam);
-    return of(exam);
+    return this.examsSubject.asObservable();
   }
 
   updateExam(index: number, updatedExam: Exam): Observable<Exam> {
     this.exams[index] = updatedExam;
-    return of(updatedExam);
+    this.examsSubject.next([...this.exams]);
+    return new BehaviorSubject(updatedExam).asObservable();
   }
 
   deleteExam(index: number): Observable<boolean> {
     this.exams.splice(index, 1);
-    return of(true);
+    this.examsSubject.next([...this.exams]);
+    return new BehaviorSubject(true).asObservable();
   }
 }

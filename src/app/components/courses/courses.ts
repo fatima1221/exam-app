@@ -25,10 +25,6 @@ export class Courses implements OnInit {
   constructor(private courseService: CourseService) {}
 
   ngOnInit(): void {
-    this.loadCourses();
-  }
-
-  loadCourses(): void {
     this.courseService.getCourses().subscribe((data) => {
       this.courses = data;
     });
@@ -37,12 +33,20 @@ export class Courses implements OnInit {
   handleUpdate(updatedRow: Course): void {
     this.courseService
       .updateCourse(updatedRow.courseId, updatedRow)
-      .subscribe(() => this.loadCourses());
+      .subscribe(() =>
+        this.courseService
+          .getCourses()
+          .subscribe((data) => (this.courses = data))
+      );
   }
 
   handleDelete(row: Course): void {
     this.courseService
       .deleteCourse(row.courseId)
-      .subscribe(() => this.loadCourses());
+      .subscribe(() =>
+        this.courseService
+          .getCourses()
+          .subscribe((data) => (this.courses = data))
+      );
   }
 }

@@ -22,31 +22,25 @@ export class Exams {
   constructor(private examService: ExamService) {}
 
   ngOnInit(): void {
-    this.loadExams();
-  }
-
-  loadExams(): void {
     this.examService.getExams().subscribe((data) => (this.exams = data));
   }
-  handleUpdate(updatedExam: Exam): void {
+  handleUpdate(updatedRow: Exam): void {
     const index = this.exams.findIndex(
-      (e) =>
-        e.courseId === updatedExam.courseId &&
-        e.studentId === updatedExam.studentId
+      (exam) =>
+        exam.courseId === updatedRow.courseId &&
+        exam.studentId === updatedRow.studentId
     );
     if (index !== -1) {
-      this.examService
-        .updateExam(index, updatedExam)
-        .subscribe(() => this.loadExams());
+      this.examService.updateExam(index, updatedRow).subscribe();
     }
   }
-
-  handleDelete(exam: Exam): void {
+  handleDelete(row: Exam): void {
     const index = this.exams.findIndex(
-      (e) => e.courseId === exam.courseId && e.studentId === exam.studentId
+      (exam) =>
+        exam.courseId === row.courseId && exam.studentId === row.studentId
     );
     if (index !== -1) {
-      this.examService.deleteExam(index).subscribe(() => this.loadExams());
+      this.examService.deleteExam(index).subscribe();
     }
   }
 }

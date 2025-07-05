@@ -21,21 +21,17 @@ export class Students {
   ];
   constructor(private studentService: StudentService) {}
   ngOnInit(): void {
-    this.loadStudents();
-  }
-  loadStudents(): void {
     this.studentService.getStudents().subscribe((data) => {
       this.students = data;
     });
   }
+
   handleUpdate(updatedRow: Student): void {
     this.studentService
       .updateStudent(updatedRow.studentId, updatedRow)
-      .subscribe(() => this.loadStudents());
+      .subscribe();
   }
   handleDelete(row: Student): void {
-    this.studentService
-      .deleteStudent(row.studentId)
-      .subscribe(() => this.loadStudents());
+    this.studentService.deleteStudent(row.studentId).subscribe();
   }
 }

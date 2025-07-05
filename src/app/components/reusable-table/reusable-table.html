@@ -21,7 +21,12 @@
           />
         </ng-container>
         <ng-template #viewMode>
-          {{ row[column.key] }}
+          <ng-template #defaultView>
+            {{ row[column.key] }}
+          </ng-template>
+          <ng-container *ngIf="column.type === 'date'; else defaultView">
+            {{ row[column.key] | date }}
+          </ng-container>
         </ng-template>
       </td>
     </ng-container>
