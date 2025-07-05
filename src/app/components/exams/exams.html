@@ -1,1 +1,8 @@
-<p>exams works!</p>
+<app-reusable-table
+  [title]="'Exams'"
+  [columns]="columns"
+  [dataSource]="exams"
+  [editable]="true"
+  (update)="handleUpdate($event)"
+  (delete)="handleDelete($event)"
+></app-reusable-table>

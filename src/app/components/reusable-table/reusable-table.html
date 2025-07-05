@@ -1,0 +1,59 @@
+<div class="container">
+  <h1>{{ title }}</h1>
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    class="mat-elevation-z8 full-width"
+  >
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
+      <th mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        <ng-container
+          *ngIf="
+            editIndex === i && editable && (column.editable ?? true);
+            else viewMode
+          "
+        >
+          <input
+            matInput
+            [type]="column.type || 'text'"
+            [(ngModel)]="editedRow[column.key]"
+          />
+        </ng-container>
+        <ng-template #viewMode>
+          {{ row[column.key] }}
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        <ng-container *ngIf="editIndex === i && editable; else actionButtons">
+          <button mat-icon-button color="primary" (click)="saveEdit()">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="cancelEdit()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </ng-container>
+        <ng-template #actionButtons>
+          <button
+            *ngIf="editable"
+            mat-icon-button
+            color="accent"
+            (click)="startEdit(i)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteRow(row)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

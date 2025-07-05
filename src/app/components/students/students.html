@@ -1,1 +1,8 @@
-<p>students works!</p>
+<app-reusable-table
+  [title]="'Students'"
+  [dataSource]="students"
+  [columns]="columns"
+  [editable]="true"
+  (update)="handleUpdate($event)"
+  (delete)="handleDelete($event)"
+></app-reusable-table>
